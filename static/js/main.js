@@ -11,8 +11,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const redrawCanvas = () => {
         if (!image.src) return;
-        canvas.width = image.width;
-        canvas.height = image.height;
+
+        const container = document.getElementById('canvas-container');
+        const containerWidth = container.offsetWidth;
+        const scale = containerWidth / image.naturalWidth;
+
+        canvas.width = image.naturalWidth;
+        canvas.height = image.naturalHeight;
+
+        canvas.style.width = `${image.naturalWidth * scale}px`;
+        canvas.style.height = `${image.naturalHeight * scale}px`;
+
         ctx.drawImage(image, 0, 0);
 
         ctx.strokeStyle = 'red';

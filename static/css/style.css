@@ -20,9 +20,8 @@ h1, h2 {
 }
 
 #image-canvas {
-    max-width: 100%;
-    height: auto;
     cursor: crosshair;
+    display: block;
 }
 
 button {
