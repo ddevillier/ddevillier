@@ -8,10 +8,16 @@
 </head>
 <body>
     <h1>Image Slicer</h1>
-    <p>Upload an image, then left-click to add slicers, right-click to remove them, and drag to move them.</p>
-    <input type="file" id="image-loader" name="image-loader">
+    <p>Upload one or more images (or a folder of images), then left-click to add slicers, right-click to remove them, and drag to move them.</p>
+    <input type="file" id="image-loader" name="image-loader" multiple webkitdirectory>
+    <div id="image-navigation" style="display: none;">
+        <button id="prev-image">Previous</button>
+        <span id="image-counter"></span>
+        <button id="next-image">Next</button>
+    </div>
     <button id="slice-button">Slice Image</button>
     <button id="download-button">Download Selected Slices</button>
+    <button id="fullscreen-button">Toggle Fullscreen</button>
     <div id="canvas-container">
         <canvas id="image-canvas"></canvas>
     </div>

@@ -25,12 +25,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    let imageFilepaths = [];
+    let currentImageIndex = 0;
+
     imageLoader.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
+        const files = e.target.files;
+        if (!files.length) return;
 
         const formData = new FormData();
-        formData.append('file', file);
+        for (const file of files) {
+            formData.append('files[]', file);
+        }
 
         fetch('/upload', {
             method: 'POST',
@@ -38,16 +43,59 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => response.json())
         .then(data => {
-            if (data.filepath) {
-                imageFilepath = data.filepath;
-                image.src = imageFilepath + '?' + new Date().getTime(); // Avoid browser caching
-                image.onload = () => {
-                    lines = [];
-                    redrawCanvas();
-                };
+            if (data.filepaths && data.filepaths.length > 0) {
+                imageFilepaths = data.filepaths;
+                currentImageIndex = 0;
+                loadImage(currentImageIndex);
+                document.getElementById('image-navigation').style.display = 'block';
             }
         })
-        .catch(error => console.error('Error uploading image:', error));
+        .catch(error => console.error('Error uploading images:', error));
+    });
+
+    const loadImage = (index) => {
+        if (index < 0 || index >= imageFilepaths.length) return;
+        imageFilepath = imageFilepaths[index];
+        image.src = imageFilepath + '?' + new Date().getTime(); // Avoid browser caching
+        image.onload = () => {
+            lines = [];
+            redrawCanvas();
+            updateImageCounter();
+        };
+    };
+
+    const updateImageCounter = () => {
+        const counter = document.getElementById('image-counter');
+        counter.textContent = `${currentImageIndex + 1} / ${imageFilepaths.length}`;
+    };
+
+    document.getElementById('prev-image').addEventListener('click', () => {
+        if (currentImageIndex > 0) {
+            currentImageIndex--;
+            loadImage(currentImageIndex);
+        }
+    });
+
+    document.getElementById('next-image').addEventListener('click', () => {
+        if (currentImageIndex < imageFilepaths.length - 1) {
+            currentImageIndex++;
+            loadImage(currentImageIndex);
+        }
+    });
+
+    const fullscreenButton = document.getElementById('fullscreen-button');
+    const canvasContainer = document.getElementById('canvas-container');
+
+    fullscreenButton.addEventListener('click', () => {
+        canvasContainer.classList.toggle('fullscreen');
+        redrawCanvas(); // Redraw canvas to adjust to new size
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && canvasContainer.classList.contains('fullscreen')) {
+            canvasContainer.classList.remove('fullscreen');
+            redrawCanvas(); // Redraw canvas to adjust to original size
+        }
     });
 
     const getMousePos = (e) => {
