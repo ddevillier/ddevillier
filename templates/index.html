@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Slicer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Image Slicer</h1>
+    <p>Upload an image, then left-click to add slicers, right-click to remove them, and drag to move them.</p>
+    <input type="file" id="image-loader" name="image-loader">
+    <button id="slice-button">Slice Image</button>
+    <button id="download-button">Download Selected Slices</button>
+    <div id="canvas-container">
+        <canvas id="image-canvas"></canvas>
+    </div>
+    <h2>Slices</h2>
+    <div id="slices-container"></div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
